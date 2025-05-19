@@ -1,34 +1,33 @@
 pipeline {
   agent any
-  tools { maven 'M3' }
+
+  tools {
+    jdk 'JDK17'
+    maven 'Maven3'
+  }
+
+  environment {
+    JAVA_HOME = tool 'JDK17'
+    PATH = "$JAVA_HOME/bin:$PATH"
+  }
+
   stages {
-    stage('Checkout') { steps { checkout scm } }
-    stage('Build & Test') {
-      steps { sh 'mvn -B clean verify' }
-    }
-    stage('Docker Build & Push') {
+    stage('Checkout') {
       steps {
-        script {
-          docker.withRegistry('https://registry.example.com', 'docker-creds') {
-            ['user-service','data-service'].each { svc ->
-              def img = "registry.example.com/${svc}:${env.BUILD_NUMBER}"
-              dir(svc) {
-                sh "docker build -t ${img} ."
-                docker.image(img).push()
-              }
-            }
-          }
-        }
+        checkout scm
       }
     }
-    stage('Deploy to K8s') {
+
+    stage('Build') {
       steps {
-        withKubeConfig([credentialsId: 'kube-config']) {
-          sh 'kubectl apply -f user-service/k8s'
-          sh 'kubectl apply -f data-service/k8s'
-        }
+        sh 'mvn clean install'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh 'mvn test'
       }
     }
   }
-  post { always { junit '**/target/surefire-reports/*.xml' } }
 }

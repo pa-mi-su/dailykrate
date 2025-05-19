@@ -1,0 +1,42 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse (just in case)
+.project
+.classpath
+.settings/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Environment & secrets
+.env
+*.key
+*.pem
+
+# Docker
+**/Dockerfile
+**/docker-compose.yml
+**/k8s/*.yaml
+!**/src/**/Dockerfile  # Allow Dockerfiles inside source folders if needed
+
+# Logs
+logs/
+*.log
+
+# Build
+.mvn/
+build/

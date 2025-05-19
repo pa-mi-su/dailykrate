@@ -1,6 +1,6 @@
 package com.example.userservice.dto;
 
-public class UserDTO {
+public class UserDto {
 
     private Long id;
     private String username;
@@ -9,9 +9,9 @@ public class UserDTO {
     private String lastName;
 
     // Constructors
-    public UserDTO() {}
+    public UserDto() {}
 
-    public UserDTO(Long id, String username, String email, String firstName, String lastName) {
+    public UserDto(Long id, String username, String email, String firstName, String lastName) {
         this.id = id;
         this.username = username;
         this.email = email;

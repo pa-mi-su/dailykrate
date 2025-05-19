@@ -1,6 +1,6 @@
 package com.example.userservice.service.impl;
 
-import com.example.userservice.dto.UserDTO;
+import com.example.userservice.dto.UserDto;
 import com.example.userservice.entity.User;
 import com.example.userservice.repository.UserRepository;
 import com.example.userservice.service.UserService;
@@ -22,19 +22,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDto createUser(UserDto userDTO) {
         User user = mapToEntity(userDTO);
         return mapToDTO(userRepository.save(user));
     }
 
     @Override
-    public UserDTO getUserById(Long id) {
+    public UserDto getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         return user.map(this::mapToDTO).orElse(null);
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
+    public List<UserDto> getAllUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(this::mapToDTO)
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
+    public UserDto updateUser(Long id, UserDto userDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) return null;
 
@@ -63,8 +63,8 @@ public class UserServiceImpl implements UserService {
     // ====================
     // Mapping helpers
     // ====================
-    private UserDTO mapToDTO(User user) {
-        return new UserDTO(
+    private UserDto mapToDTO(User user) {
+        return new UserDto(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    private User mapToEntity(UserDTO dto) {
+    private User mapToEntity(UserDto dto) {
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
