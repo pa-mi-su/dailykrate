@@ -1,0 +1,16 @@
+server:
+  port: 9001
+
+spring:
+  datasource:
+    url: jdbc:postgresql://<DB_HOST>:5432/user-servicedb
+    username: <username>
+    password: <password>
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://<EUREKA_HOST>:8761/eureka
