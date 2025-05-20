@@ -1,0 +1,5 @@
+apiVersion: v2
+name: kubekrate
+description: A Helm chart for deploying multiple Spring Boot microservices
+version: 0.1.0
+appVersion: "1.0"

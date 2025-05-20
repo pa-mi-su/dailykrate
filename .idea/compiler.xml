@@ -7,7 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="data-service" />
+        <module name="api-gateway" />
+        <module name="getter-service" />
         <module name="user-service" />
+        <module name="discovery-server" />
       </profile>
     </annotationProcessing>
   </component>

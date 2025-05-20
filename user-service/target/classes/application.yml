@@ -3,12 +3,16 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://<DB_HOST>:5432/user-servicedb
-    username: <username>
-    password: <password>
+    url: jdbc:postgresql://localhost:5432/userdb
+    username: postgres
+    password: yourpassword
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
 
 eureka:
   client:

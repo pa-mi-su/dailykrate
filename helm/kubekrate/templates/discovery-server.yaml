@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ "discovery-server" }}
+spec:
+  replicas: {{ .Values.replicaCount | int }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-{{ "discovery-server" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-{{ "discovery-server" }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-{{ "discovery-server" }}
+          image: "{{ .Values.image.repository }}/{{ "discovery-server" }}:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ 8080 | int }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-{{ "discovery-server" }}
+spec:
+  selector:
+    app: {{ .Chart.Name }}-{{ "discovery-server" }}
+  ports:
+    - protocol: TCP
+      port: {{ 8080 | int }}
+      targetPort: {{ 8080 | int }}

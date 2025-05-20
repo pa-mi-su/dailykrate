@@ -5,13 +5,17 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
-  <artifactId>microservices-starter</artifactId>
+  <artifactId>kubekrate</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>user-service</module>
+    <module>api-gateway</module>
     <module>data-service</module>
+    <module>discovery-server</module>
+    <module>getter-service</module>
+    <module>user-service</module>
+    <module>writer-service</module>
   </modules>
 
   <properties>

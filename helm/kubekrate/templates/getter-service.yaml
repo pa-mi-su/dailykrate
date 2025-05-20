@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-{{ "getter-service" }}
+spec:
+  replicas: {{ .Values.replicaCount | int }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-{{ "getter-service" }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-{{ "getter-service" }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-{{ "getter-service" }}
+          image: "{{ .Values.image.repository }}/{{ "getter-service" }}:latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ 8080 | int }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-{{ "getter-service" }}
+spec:
+  selector:
+    app: {{ .Chart.Name }}-{{ "getter-service" }}
+  ports:
+    - protocol: TCP
+      port: {{ 8080 | int }}
+      targetPort: {{ 8080 | int }}
