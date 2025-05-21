@@ -8,10 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="data-service" />
         <module name="api-gateway" />
+        <module name="writer-service" />
         <module name="getter-service" />
-        <module name="user-service" />
         <module name="discovery-server" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="user-service" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

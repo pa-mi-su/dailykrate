@@ -1,48 +1,41 @@
 replicaCount: 1
 
 image:
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 api-gateway:
   image:
     repository: paumicsul/api-gateway
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   port: 8085
 
 data-service:
   image:
     repository: paumicsul/data-service
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   port: 9002
 
 discovery-server:
   image:
     repository: paumicsul/discovery-server
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   port: 8086
 
 getter-service:
   image:
     repository: paumicsul/getter-service
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   port: 8087
-
-user-service:
-  image:
-    repository: paumicsul/user-service
-    tag: latest
-    pullPolicy: IfNotPresent
-  port: 8089
 
 writer-service:
   image:
     repository: paumicsul/writer-service
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
   port: 8088
 
 db:

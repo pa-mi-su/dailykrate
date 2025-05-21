@@ -14,7 +14,6 @@
     <module>data-service</module>
     <module>discovery-server</module>
     <module>getter-service</module>
-    <module>user-service</module>
     <module>writer-service</module>
   </modules>
 
