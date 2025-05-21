@@ -3,44 +3,47 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
 
-user-service:
-  image:
-    repository: paumicsul/user-service
-    tag: latest
-    pullPolicy: IfNotPresent
-  port: 8080
-
 api-gateway:
   image:
     repository: paumicsul/api-gateway
     tag: latest
     pullPolicy: IfNotPresent
-  port: 8080
-
-discovery-server:
-  image:
-    repository: paumicsul/discovery-server
-    tag: latest
-    pullPolicy: IfNotPresent
-  port: 8080
-
-getter-service:
-  image:
-    repository: paumicsul/getter-service
-    tag: latest
-    pullPolicy: IfNotPresent
-  port: 8080
-
-writer-service:
-  image:
-    repository: paumicsul/writer-service
-    tag: latest
-    pullPolicy: IfNotPresent
-  port: 8080
+  port: 8085
 
 data-service:
   image:
     repository: paumicsul/data-service
     tag: latest
     pullPolicy: IfNotPresent
-  port: 8080
+  port: 9002
+
+discovery-server:
+  image:
+    repository: paumicsul/discovery-server
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8086
+
+getter-service:
+  image:
+    repository: paumicsul/getter-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8087
+
+user-service:
+  image:
+    repository: paumicsul/user-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8089
+
+writer-service:
+  image:
+    repository: paumicsul/writer-service
+    tag: latest
+    pullPolicy: IfNotPresent
+  port: 8088
+
+db:
+  url: jdbc:postgresql://postgres-service:5432/mydb

@@ -14,10 +14,42 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-{{ "api-gateway" }}
-          image: "{{ .Values.image.repository }}/{{ "api-gateway" }}:latest"
+          image: "{{ index .Values "api-gateway" "image" "repository" }}:{{ index .Values "api-gateway" "image" "tag" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ 8080 | int }}
+            - containerPort: 8085
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8085
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8085
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
 
 ---
 apiVersion: v1
@@ -29,5 +61,5 @@ spec:
     app: {{ .Chart.Name }}-{{ "api-gateway" }}
   ports:
     - protocol: TCP
-      port: {{ 8080 | int }}
-      targetPort: {{ 8080 | int }}
+      port: 8085
+      targetPort: 8085

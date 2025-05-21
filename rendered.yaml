@@ -1,0 +1,420 @@
+---
+# Source: kubekrate/templates/db-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-secret
+type: Opaque
+stringData:  # ✅ use stringData so you don’t have to base64 encode manually
+  username: 
+  password:
+---
+# Source: kubekrate/templates/db-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-config
+data:
+  url: "jdbc:postgresql://postgres-service:5432/mydb"
+---
+# Source: kubekrate/templates/api-gateway.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-api-gateway
+spec:
+  selector:
+    app: kubekrate-api-gateway
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+---
+# Source: kubekrate/templates/data-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-data-service
+spec:
+  selector:
+    app: kubekrate-data-service
+  ports:
+    - protocol: TCP
+      port: 9002
+      targetPort: 9002
+---
+# Source: kubekrate/templates/discovery-server.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-discovery-server
+spec:
+  selector:
+    app: kubekrate-discovery-server
+  ports:
+    - protocol: TCP
+      port: 8086
+      targetPort: 8086
+---
+# Source: kubekrate/templates/getter-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-getter-service
+spec:
+  selector:
+    app: kubekrate-getter-service
+  ports:
+    - protocol: TCP
+      port: 8087
+      targetPort: 8087
+---
+# Source: kubekrate/templates/user-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-user-service
+spec:
+  selector:
+    app: kubekrate-user-service
+  ports:
+    - protocol: TCP
+      port: 8089
+      targetPort: 8089
+---
+# Source: kubekrate/templates/writer-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubekrate-writer-service
+spec:
+  selector:
+    app: kubekrate-writer-service
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+---
+# Source: kubekrate/templates/api-gateway.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-api-gateway
+  template:
+    metadata:
+      labels:
+        app: kubekrate-api-gateway
+    spec:
+      containers:
+        - name: kubekrate-api-gateway
+          image: "paumicsul/api-gateway:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8085
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8085
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8085
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+---
+# Source: kubekrate/templates/data-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-data-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-data-service
+  template:
+    metadata:
+      labels:
+        app: kubekrate-data-service
+    spec:
+      containers:
+        - name: kubekrate-data-service
+          image: "paumicsul/data-service:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9002
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9002
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9002
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+---
+# Source: kubekrate/templates/discovery-server.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-discovery-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-discovery-server
+  template:
+    metadata:
+      labels:
+        app: kubekrate-discovery-server
+    spec:
+      containers:
+        - name: kubekrate-discovery-server
+          image: "paumicsul/discovery-server:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8086
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8086
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8086
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+---
+# Source: kubekrate/templates/getter-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-getter-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-getter-service
+  template:
+    metadata:
+      labels:
+        app: kubekrate-getter-service
+    spec:
+      containers:
+        - name: kubekrate-getter-service
+          image: "paumicsul/getter-service:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8087
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8087
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8087
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+---
+# Source: kubekrate/templates/user-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-user-service
+  template:
+    metadata:
+      labels:
+        app: kubekrate-user-service
+    spec:
+      containers:
+        - name: kubekrate-user-service
+          image: "paumicsul/user-service:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8089
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8089
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8089
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
+---
+# Source: kubekrate/templates/writer-service.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubekrate-writer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubekrate-writer-service
+  template:
+    metadata:
+      labels:
+        app: kubekrate-writer-service
+    spec:
+      containers:
+        - name: kubekrate-writer-service
+          image: "paumicsul/writer-service:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8088
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8088
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8088
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password

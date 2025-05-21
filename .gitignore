@@ -40,3 +40,7 @@ logs/
 # Build
 .mvn/
 build/
+
+# secrets
+helm/kubekrate/values.secret.yaml
+helm/kubekrate/values.secret.yaml

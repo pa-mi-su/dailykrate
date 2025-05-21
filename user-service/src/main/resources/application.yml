@@ -1,18 +1,24 @@
+# Spring Boot config
+info:
+  app:
+    name: discovery-server
+    version: 1.0.0
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
 server:
-  port: 9001
-
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/userdb
-    username: postgres
-    password: yourpassword
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  port: 8089
 
 eureka:
   client:

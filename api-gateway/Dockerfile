@@ -1,10 +1,9 @@
-# Dockerfile for api-gateway
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY target/api-gateway-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8085
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

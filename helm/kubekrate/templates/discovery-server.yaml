@@ -14,11 +14,42 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}-{{ "discovery-server" }}
-          image: "{{ .Values.image.repository }}/{{ "discovery-server" }}:latest"
+          image: "{{ index .Values "discovery-server" "image" "repository" }}:{{ index .Values "discovery-server" "image" "tag" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ 8080 | int }}
-
+            - containerPort: 8086
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8086
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8086
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: db-config
+                  key: url
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: password
 ---
 apiVersion: v1
 kind: Service
@@ -29,5 +60,5 @@ spec:
     app: {{ .Chart.Name }}-{{ "discovery-server" }}
   ports:
     - protocol: TCP
-      port: {{ 8080 | int }}
-      targetPort: {{ 8080 | int }}
+      port: 8086
+      targetPort: 8086
