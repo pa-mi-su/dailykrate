@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define all services
-services=("api-gateway" "discovery-server" "getter-service" "writer-service" "data-service")
+services=("api-gateway" "user-service" "discovery-server" "getter-service" "writer-service" "data-service")
 
 for service in "${services[@]}"
 do

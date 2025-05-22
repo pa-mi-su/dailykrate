@@ -6,6 +6,7 @@ services=(
   "kubekrate-getter-service"
   "kubekrate-writer-service"
   "kubekrate-data-service"
+  "kubekrate-user-service"
 )
 
 echo "=============================="

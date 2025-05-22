@@ -38,5 +38,12 @@ writer-service:
     pullPolicy: Always
   port: 8088
 
+user-service:
+  image:
+    repository: paumicsul/user-service
+    tag: latest
+    pullPolicy: Always
+  port: 8089
+
 db:
   url: jdbc:postgresql://postgres-service:5432/mydb

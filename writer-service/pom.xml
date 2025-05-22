@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>com.example</groupId>
-        <artifactId>microservices-starter</artifactId>
+        <artifactId>kubekrate</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
